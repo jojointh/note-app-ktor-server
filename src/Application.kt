@@ -18,5 +18,15 @@ fun Application.module(testing: Boolean = false) {
             setPrettyPrinting()
         }
     }
+
+//    CoroutineScope(Dispatchers.IO).launch {
+//        registerUser(
+//            User(
+//                "abc@abc.com",
+//                "123456"
+//            )
+//        )
+//    }
+
 }
 
