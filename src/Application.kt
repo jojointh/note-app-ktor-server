@@ -1,5 +1,6 @@
 package com.nongmah
 
+import com.nongmah.routes.loginRoute
 import com.nongmah.routes.registerRoute
 import io.ktor.application.*
 import io.ktor.features.*
@@ -15,6 +16,7 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     install(Routing) {
         registerRoute()
+        loginRoute()
     }
     install(ContentNegotiation) {
         gson {
