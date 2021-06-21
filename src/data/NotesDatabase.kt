@@ -6,6 +6,7 @@ import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
+import org.litote.kmongo.setValue
 
 private val client = KMongo.createClient().coroutine
 private val database = client.getDatabase("NotesDatabase")
@@ -27,4 +28,26 @@ suspend fun checkPasswordForEmail(email: String, passwordToCheck: String): Boole
 
 suspend fun getNotesForUser(email: String): List<Note> {
     return notes.find(Note::owners contains email).toList()
+}
+
+suspend fun saveNote(note: Note): Boolean {
+    val noteExists = notes.findOneById(note.id) != null
+    return if (noteExists) {
+        notes.updateOneById(note.id, note).wasAcknowledged()
+    } else {
+        notes.insertOne(note).wasAcknowledged()
+    }
+}
+
+suspend fun deleteNoteForUser(email: String, noteID: String): Boolean {
+    val note = notes.findOne(Note::id eq noteID, Note::owners contains email)
+    note?.let {
+        if (note.owners.size > 1) {
+            // the note has multiple owners, so we just delete the email from the owners list
+            val newOwner = note.owners - email
+            val updateResult = notes.updateOne(Note::id eq note.id, setValue(Note::owners, newOwner))
+            return updateResult.wasAcknowledged()
+        }
+        return notes.deleteOneById(note.id).wasAcknowledged()
+    } ?: return false
 }
