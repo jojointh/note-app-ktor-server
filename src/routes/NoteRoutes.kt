@@ -26,7 +26,7 @@ fun Route.noteRoutes() {
         }
     }
 
-    route("add-owner-to-note") {
+    route("/add-owner-to-note") {
         authenticate {
             post {
                 val request = try {
