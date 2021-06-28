@@ -2,7 +2,7 @@ package com.nongmah.data
 
 import com.nongmah.data.collections.Note
 import com.nongmah.data.collections.User
-import com.nongmah.security.checkHashForPassword
+import com.nongmah.security.isPasswordCorrect
 import org.litote.kmongo.contains
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
@@ -23,8 +23,8 @@ suspend fun checkIfUserExists(email: String): Boolean {
 }
 
 suspend fun checkPasswordForEmail(email: String, passwordToCheck: String): Boolean {
-    val hashWithSalt = users.findOne(User::email eq email)?.password ?: return false
-    return checkHashForPassword(passwordToCheck, hashWithSalt)
+    val passwordHash = users.findOne(User::email eq email)?.password ?: return false
+    return isPasswordCorrect(passwordToCheck, passwordHash)
 }
 
 suspend fun getNotesForUser(email: String): List<Note> {
