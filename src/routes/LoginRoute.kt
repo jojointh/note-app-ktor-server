@@ -12,7 +12,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 
 fun Route.loginRoute() {
-    route("login") {
+    route("/login") {
         post {
             val request = try {
                 call.receive<AccountRequest>()
