@@ -26,6 +26,13 @@ fun Application.module(testing: Boolean = false) {
         configureAuth()
     }
     install(Routing) {
+        // web
+        static("/assets") {
+            resources("assets")
+        }
+        webRoute()
+
+        // APIs
         registerRoute()
         loginRoute()
         noteRoutes()
